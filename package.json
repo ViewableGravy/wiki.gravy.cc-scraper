@@ -7,5 +7,12 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.8",
+    "axios-retry": "^4.1.0",
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.4.5",
+    "scrapfly-sdk": "^0.4.0"
   }
 }
