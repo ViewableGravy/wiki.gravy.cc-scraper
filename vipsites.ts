@@ -1,10 +1,11 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 export const vipsites_urls = {
-  Sections: `/katana/site/${process.env.VIP_CONTROL_KATANA_SERVICE_ID}/sections`,
-  Section: `/katana/site/${process.env.VIP_CONTROL_KATANA_SERVICE_ID}/section`,
-  PreviewSite: `/katana/site/${process.env.VIP_CONTROL_KATANA_SERVICE_ID}/preview/site`,
-  PreviewSection: `/katana/site/${process.env.VIP_CONTROL_KATANA_SERVICE_ID}/preview/site/new`,
+  sections: `/katana/site/${process.env.VIP_CONTROL_KATANA_SERVICE_ID}/sections`,
+  section: `/katana/site/${process.env.VIP_CONTROL_KATANA_SERVICE_ID}/section`,
+  previewSite: `/katana/site/${process.env.VIP_CONTROL_KATANA_SERVICE_ID}/preview/site`,
+  previewSection: `/katana/site/${process.env.VIP_CONTROL_KATANA_SERVICE_ID}/preview/site/new`,
 };
 
 export const sectionData = {
