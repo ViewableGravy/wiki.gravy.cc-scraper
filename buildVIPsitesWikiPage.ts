@@ -1,10 +1,10 @@
 import { cleanAllExistingSectionIds } from "./cleanExistingVIPsitesSections";
-import { createSection } from "./createSection";
+import { createSection, createSectionsFromSectionData } from "./createSection";
 import { generatePreview } from "./generatePreview";
 import { formatForKatana } from "./katana/format";
 import { publishToWikiGravy } from "./publishToWikiGravy";
-import { extractWikipediaPage } from "./wikipedia/extract";
-import { fetchWikipediaPage } from "./wikipedia/fetch";
+import { performPreviewTransform } from "./transformers/performPreviewTransform";
+import { processSlug } from "./wikipedia/processSlug";
 
 export async function buildVIPsitesWikiPage(
   wikiSlug: string
@@ -20,32 +20,40 @@ export async function buildVIPsitesWikiPage(
     console.log("Successfully cleaned existing VIPsites sections");
   }
 
-  // Step 2: Fetch the wikipedia page
-  console.log("Step 2: Fetch the wikipedia page");
-  const cheerio = await fetchWikipediaPage(wikiSlug);
-
-  // Step 3: Extract all relevenat wiki data
-  console.log("Step 3: Extract all relevenat wiki data");
-  const extractedPage = extractWikipediaPage(cheerio);
+  // Step 2: Extract Sectinos from the wikipedia page
+  console.log("Step 2: Extract Sectinos from the wikipedia page");
+  const sectionsOutput = await processSlug(wikiSlug);
 
   // Step 4: Format data into desired VIPsites section format
   console.log("Step 4: Format data into desired VIPsites section format");
-  const formatted = formatForKatana(extractedPage);
+  const createSectionsData = formatForKatana(sectionsOutput);
+  console.log("createSectionsData", createSectionsData);
 
   // Step 5: Populate VIPsites sections with formatted data
   console.log("Step 5: Populate VIPsites sections with formatted data");
-  await createSection(formatted);
+  await createSectionsFromSectionData(createSectionsData);
 
   // Step 6: Get the preview site
   console.log("Step 6: Get the preview site");
   const generatedPreview = await generatePreview();
   console.log("generatedPreview", generatedPreview);
 
-  // Step 7: Provide site to server
-  console.log("Step 7: Provide site to server");
-  await publishToWikiGravy(generatedPreview, wikiSlug);
+  // Step 7: Transform returned html to contain actual data DUUUHH
+  console.log("Step 7: Transform returned html to contain actual data DUUUHH");
+  const transformedHTML = performPreviewTransform(
+    generatedPreview,
+    createSectionsData
+  );
 
-  // Step 8: Return the all found additional wiki slugs
-  console.log("Step 8: Return the all found additional wiki slugs");
+  // Step 8: Provide site to server
+  console.log("Step 8: Provide site to server");
+  await publishToWikiGravy(transformedHTML, wikiSlug);
+
+  // Step 9: Clean up existing VIPsites sections
+  console.log("Step 9: Clean up existing VIPsites sections");
+  await cleanAllExistingSectionIds();
+
+  // Step 10: Return the all found additional wiki slugs
+  console.log("Step 10: Return the all found additional wiki slugs");
   return [];
 }

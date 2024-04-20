@@ -1,5 +1,5 @@
 export function getBaseSiteData({
-  pageTitle = "Deez Nutz",
+  pageTitle = "Wiki.Gravy.cc",
   pageDescription = "Nutty Description",
 } = {}) {
   return {
@@ -15,7 +15,8 @@ export function getBaseSiteData({
         },
       },
       keywords: null,
-      favicon: "https://s2.coinmarketcap.com/static/img/coins/64x64/74.png",
+      favicon:
+        "https://upload.wikimedia.org/wikipedia/commons/d/de/Wikipedia_Logo_1.0.png",
       renderer: "sections",
       status: "published",
     },

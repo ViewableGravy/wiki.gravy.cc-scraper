@@ -1,19 +1,45 @@
-type HeroBannerData = {
-  title: string;
-};
+import { isTag } from "../../wikipedia/isTag";
+import { createImageAttachment } from "../createImageAttachment";
 
-export function createHeroBannerData({ title }: HeroBannerData) {
-  return {
+import cheerio from "cheerio";
+import type { CreateSectionData } from "./types";
+
+export function createHeroBannerData(
+  [title, paragraph, figure]: cheerio.TagElement[],
+  options: { contextSelector: (content: string) => string }
+): CreateSectionData {
+  const katanaData = {
     properties: {
       content_layout: "centered",
       colour_style: "standard",
-      title,
-      image: {
+      title: options.contextSelector("title"),
+      subtitle: options.contextSelector("subtitle"),
+      call_to_action: {
         type: "link",
-        url: "https://images.unsplash.com/photo-1553181001-f9cf6c45afca?crop=entropy&cs=tinysrgb&fit=crop&fm=jpg&h=900&ixid=MnwxfDB8MXxyYW5kb218MHx8TmV3cyAsIE1lZGlhLDEkfXx8fHx8fDE3MTM1MzQ3NzY&ixlib=rb-4.0.3&q=80&utm_campaign=api-credit&utm_medium=referral&utm_source=unsplash_source&w=1600",
+        text: options.contextSelector("call_to_action.text"),
+        value: "en.wikipedia.org",
+        enabled: false,
       },
+      image: createImageAttachment(figure?.attribs?.src),
     },
-    style: "standard",
+    style: "gradient_top",
     section_id: "katana.v1.hero",
   };
+
+  const transformHTML = (html: string) => {
+    if (isTag(title)) {
+      html = html.replace(katanaData.properties.title, cheerio.html(title));
+    }
+    if (isTag(paragraph)) {
+      console.log("cheerio.html(paragraph)", cheerio.html(paragraph));
+      html = html.replace(
+        katanaData.properties.subtitle,
+        cheerio.html(paragraph)
+      );
+    }
+
+    return html;
+  };
+
+  return [katanaData, transformHTML];
 }
