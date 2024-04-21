@@ -51,7 +51,7 @@ export const firstSectionHeroBannerTransformer: TransformerMethod<
 
   if (data.properties.call_to_action.enabled && hatnote) {
     const link = $(hatnote).find("a").attr("href") ?? "";
-    console.log("link", link);
+    // console.log("link", link);
     html = html.replace(data.properties.call_to_action.value, link);
 
     const sanitisedHatNote = sanitiseElementsInChildren(hatnote, "a", "span");
