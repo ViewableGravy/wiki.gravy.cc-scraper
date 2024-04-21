@@ -1,13 +1,14 @@
 import axios from "axios";
-import fs from "fs";
 import * as cheerio from "cheerio";
+import { $, setCheerio } from "../cheerio";
 
 /**
  * Fetches the wikipedia page. the /wiki/ part of the slug is not required
  */
 export const fetchWikipediaPage = async (slug: string) => {
   const response = await axios.get(`https://en.wikipedia.org/wiki/${slug}`);
-  return cheerio.load(response.data);
+  setCheerio(cheerio.load(response.data));
+  $("style").remove();
 };
 
 // Get all page slugs

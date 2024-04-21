@@ -36,7 +36,7 @@ export async function buildVIPsitesWikiPage(
   // Step 6: Get the preview site
   console.log("Step 6: Get the preview site");
   const generatedPreview = await generatePreview();
-  console.log("generatedPreview", generatedPreview);
+  // console.log("generatedPreview", generatedPreview);
 
   // Step 7: Transform returned html to contain actual data DUUUHH
   console.log("Step 7: Transform returned html to contain actual data DUUUHH");

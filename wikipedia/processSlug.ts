@@ -3,9 +3,9 @@ import { fetchWikipediaPage } from "./fetch";
 import { matchElementPattern } from "./patternMatcher";
 
 export async function processSlug(wikiSlug: string) {
-  const pageData = await fetchWikipediaPage(wikiSlug);
+  await fetchWikipediaPage(wikiSlug);
 
-  const nodeList = extractNodes(pageData);
+  const nodeList = extractNodes();
 
   const matchedElementPatterns = matchElementPattern(nodeList);
 

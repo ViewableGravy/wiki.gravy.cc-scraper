@@ -5,6 +5,7 @@ import { buildVIPsitesWikiPage } from "./buildVIPsitesWikiPage";
 dotenv.config();
 
 const sampleSlugs = [
+  "Rabbit",
   "War_to_End_All_Wars_(album)",
   // "The_War_to_End_All_Wars_(album)",
   // "The_War_That_Will_End_War",

@@ -3,6 +3,7 @@ import { createImageAttachment } from "../createImageAttachment";
 
 import cheerio from "cheerio";
 import type { CreateSectionData } from "./types";
+import { getElementContent } from "../../wikipedia/getElementContent";
 
 export function createHeroBannerData(
   [title, paragraph, figure]: cheerio.TagElement[],
@@ -26,12 +27,17 @@ export function createHeroBannerData(
     section_id: "katana.v1.hero",
   };
 
+  // console.log(katanaData.properties.subtitle);
+
   const transformHTML = (html: string) => {
     if (isTag(title)) {
-      html = html.replace(katanaData.properties.title, cheerio.html(title));
+      html = html.replace(
+        katanaData.properties.title,
+        getElementContent(title)
+      );
     }
     if (isTag(paragraph)) {
-      console.log("cheerio.html(paragraph)", cheerio.html(paragraph));
+      // console.log("cheerio.html(paragraph)", cheerio.html(paragraph));
       html = html.replace(
         katanaData.properties.subtitle,
         cheerio.html(paragraph)

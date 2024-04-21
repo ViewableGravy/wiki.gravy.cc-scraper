@@ -27,26 +27,37 @@
  * Delete Empty Tags (Empty Tags are not useful) - Make sure they don't have the special characters
  */
 
+import cheerio from "cheerio";
 import { wikipediaContentIndex } from "./consts";
 import { isTag } from "./isTag";
+import { getElementContent } from "./getElementContent";
+import { isElementEmpty } from "./isElementEmpty";
+import { $ } from "../cheerio";
 
-export const extractWikipediaPage = (cheerio: cheerio.Root) => {
-  console.log({
-    title: cheerio(".mw-page-title-main").first().text(),
-  });
+const filterNonEmptyNode = (node: cheerio.Element) => {
+  if (!isTag(node)) {
+    return false;
+  }
 
-  return {
-    title: cheerio(".mw-page-title-main").first().text(),
-  };
+  if (["p", "h2", "h3", "h4", "h5", "h6"].includes(node.tagName)) {
+    const contentExists = isElementEmpty(node);
+    console.log("contentExists", contentExists);
+    return contentExists;
+  }
+
+  return true;
 };
 
-export function extractNodes(cheerio: cheerio.Root) {
+export function extractNodes() {
   let sectionNumber = 0;
 
-  const elements = cheerio(".mw-content-ltr > *").toArray();
-  const [mainTitle] = cheerio("h1").toArray();
+  const elements = $(".mw-content-ltr > *").toArray();
+  const nonEmptyElements = elements.filter((element) => {
+    return filterNonEmptyNode(element);
+  });
+  const [mainTitle] = $("h1").toArray();
 
-  const finalNodes = elements.reduce<Array<Array<cheerio.TagElement>>>(
+  const finalNodes = nonEmptyElements.reduce<Array<Array<cheerio.TagElement>>>(
     (acc, val) => {
       if (isTag(val)) {
         if (val.name === wikipediaContentIndex["Main Section Delimiter"]) {

@@ -9,8 +9,8 @@ export function getBaseSiteData({
       color: "pink",
       style: {
         fonts: {
-          body: "lobster",
-          heading: "lobster",
+          body: "montserrat",
+          heading: "poppins",
           brand: "lobster",
         },
       },
