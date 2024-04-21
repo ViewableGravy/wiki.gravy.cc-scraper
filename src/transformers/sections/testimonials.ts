@@ -46,7 +46,6 @@ export const TestimonialTransformers: TestimonialTransformers = {
       .find("> li")
       .toArray()
       .forEach((li, index) => {
-        console.log("index", index);
         const entry = data.properties.testimonials[index];
         if (!isTag(li)) return;
         const sanitised = sanitiseElementsInChildren(li, "ul", "span");
