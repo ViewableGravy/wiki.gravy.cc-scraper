@@ -1,6 +1,8 @@
 import axios from "axios";
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({
+  path: "/home/gravy/docker/wiki.gravy.cc-scraper/.env",
+});
 
 export async function publishToWikiGravy(siteHTML: string, slug: string) {
   await axios
