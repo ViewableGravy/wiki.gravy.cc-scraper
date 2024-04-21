@@ -47,6 +47,9 @@ export async function buildVIPsitesWikiPage(
   console.log("Step 4: Populate VIPsites sections with formatted data");
   const sectionIDData = await createSectionsFromSectionData(createSectionsData);
 
+  if (sectionIDData.length === 0) {
+    return slugs;
+  }
   // Step 5: Apply Section Order
   console.log("Step 5: Apply Section Order");
   await applySectionOrder(sectionIDData.map(({ id }) => id));

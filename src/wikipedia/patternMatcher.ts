@@ -60,11 +60,11 @@ export async function matchElementPattern(input: Nodes, wikiSlug: string) {
     }
   }
 
-  await fs.writeFileSync(
-    "output.json",
-    JSON.stringify(spareMutableInputs, null, 2),
-    "utf-8"
-  );
+  // await fs.writeFileSync(
+  //   "output.json",
+  //   JSON.stringify(spareMutableInputs, null, 2),
+  //   "utf-8"
+  // );
 
   return output;
 }

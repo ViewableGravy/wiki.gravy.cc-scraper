@@ -40,12 +40,15 @@ async function infinitelyGenerateSites() {
   for (let index = 0; index < startingSlugs.length; index++) {
     const element = startingSlugs[index];
 
-    const additionalSlugs = await buildVIPsitesWikiPage(element);
-    startingSlugs.push(
-      ...additionalSlugs.filter((slug) => !startingSlugs.includes(slug))
-    );
-
-    console.log("sampleSlugs.length", startingSlugs.length);
+    try {
+      const additionalSlugs = await buildVIPsitesWikiPage(element);
+      startingSlugs.push(
+        ...additionalSlugs.filter((slug) => !startingSlugs.includes(slug))
+      );
+      console.log("sampleSlugs.length", startingSlugs.length);
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
 
