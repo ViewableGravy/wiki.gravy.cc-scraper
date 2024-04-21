@@ -6,12 +6,14 @@ import fs from "fs";
 import { matchH2SectionWithOnlyParagraphs } from "./patterns/only-paragraphs";
 import { has } from "lodash-es";
 import { matchH3WithOnlyParagraphsBeforeAnotherH3 } from "./patterns/h3-only-paragraphs-before-another-h3";
+import { matchAmbiguousPage } from "./patterns/ambigouos-page";
 
 export type SectionNames =
   | "heroBanner"
   | "singleParagraph"
   | "infoBox"
   | "H2SectionWithOnlyParagraphs"
+  | "ambiguousPage"
   | "H2WithH3AndPDirectSiblings";
 export type OutputSection = [
   sectionName: SectionNames,
@@ -38,6 +40,8 @@ export async function matchElementPattern(input: Nodes, wikiSlug: string) {
     if (matchH3WithOnlyParagraphsBeforeAnotherH3(mutableInput, output))
       continue;
 
+    if (matchAmbiguousPage(mutableInput, output)) continue;
+
     // H2 specificity
     if (matchH2SectionWithOnlyParagraphs(mutableInput, output)) continue;
 
@@ -60,11 +64,11 @@ export async function matchElementPattern(input: Nodes, wikiSlug: string) {
     }
   }
 
-  // await fs.writeFileSync(
-  //   "output.json",
-  //   JSON.stringify(spareMutableInputs, null, 2),
-  //   "utf-8"
-  // );
+  await fs.writeFileSync(
+    "output.json",
+    JSON.stringify(spareMutableInputs, null, 2),
+    "utf-8"
+  );
 
   return output;
 }

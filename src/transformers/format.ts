@@ -18,6 +18,10 @@ import {
   createServicesListSectionData,
   ServiceListTransformers,
 } from "./sections/services-list";
+import {
+  createTestimonialsSectionData,
+  TestimonialTransformers,
+} from "./sections/testimonials";
 
 /**
  * Takes the cheerio object of relevant data and generates a structure that is appropriate
@@ -68,6 +72,14 @@ export const formatForKatana = (data: OutputSections) => {
             sectionData: createFaqSectionData(nodes, {
               contextSelector,
               transformer: mainInfoBoxTransformer,
+            }),
+          };
+        case "ambiguousPage":
+          return {
+            sectionName,
+            sectionData: createTestimonialsSectionData(nodes, {
+              contextSelector,
+              transformer: TestimonialTransformers.Ambiguous,
             }),
           };
         default:

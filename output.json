@@ -1,0 +1,31 @@
+{
+  "testing": [
+    [
+      {
+        "tagName": "div",
+        "classes": "side-box side-box-right plainlinks sistersitebox"
+      },
+      {
+        "tagName": "ul"
+      },
+      {
+        "tagName": "div",
+        "classes": "tocright"
+      }
+    ],
+    [
+      {
+        "tagName": "link"
+      },
+      {
+        "tagName": "div",
+        "classes": "side-box side-box-right plainlinks sistersitebox selfreference"
+      },
+      {
+        "tagName": "div",
+        "id": "disambigbox",
+        "classes": "metadata plainlinks dmbox dmbox-disambig"
+      }
+    ]
+  ]
+}

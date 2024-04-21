@@ -1,14 +1,10 @@
-import dotenv from "dotenv";
 import { buildVIPsitesWikiPage } from "./src/buildVIPsitesWikiPage";
 import yargs from "yargs/yargs";
 import { hideBin } from "yargs/helpers";
-import path from "node:path";
+import { loadEnv } from "./src/loadEnv";
 const argv = yargs(hideBin(process.argv)).argv;
 
-dotenv.config({
-  path: "/home/gravy/docker/wiki.gravy.cc-scraper/.env",
-});
-
+loadEnv();
 const startingSlugs = [
   "Taylor_Swift",
   "Rabbit",
