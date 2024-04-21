@@ -7,6 +7,7 @@ import type {
   TransformerMethod,
 } from "./types";
 import { createImageAttachment } from "../createImageAttachment";
+import { sample } from "lodash-es";
 
 /***** TYPE DEFINITIONS *****/
 type HeroBannerData = ReturnType<typeof createHeroBannerData>;
@@ -14,8 +15,9 @@ type HeroBannerData = ReturnType<typeof createHeroBannerData>;
 export const createHeroBannerData = (contextSelector: ContextSelector) => {
   return {
     properties: {
-      content_layout: "centered",
-      colour_style: "standard",
+      content_layout: "left_aligned",
+      colour_style: "black",
+      // colour_style: sample(["dark", "black"]),
       title: contextSelector("title"),
       subtitle: contextSelector("subtitle"),
       call_to_action: {
@@ -26,7 +28,7 @@ export const createHeroBannerData = (contextSelector: ContextSelector) => {
       },
       image: createImageAttachment(contextSelector.image("image")),
     },
-    style: "gradient_top",
+    style: "photo_background",
     section_id: "katana.v1.hero",
   };
 };

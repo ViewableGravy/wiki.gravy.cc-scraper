@@ -27,7 +27,7 @@ export async function buildVIPsitesWikiPage(
   // Step 4: Format data into desired VIPsites section format
   console.log("Step 4: Format data into desired VIPsites section format");
   const createSectionsData = formatForKatana(sectionsOutput);
-  console.log("createSectionsData", createSectionsData);
+  // console.log("createSectionsData", createSectionsData);
 
   // Step 5: Populate VIPsites sections with formatted data
   console.log("Step 5: Populate VIPsites sections with formatted data");

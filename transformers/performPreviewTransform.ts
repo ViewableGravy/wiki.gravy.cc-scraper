@@ -1,9 +1,11 @@
 import cheerio from "cheerio";
 import type { CreateSectionsData } from "./sections/types";
+import { getElementContent } from "../wikipedia/getElementContent";
+import { isTag } from "../wikipedia/isTag";
 
 const addStyles = (html: string) => {
   const $ = cheerio.load(html);
-  const anhorStyles = /* css */ `
+  const anhorStyles = `
     <style>
       a {
         color: #36c;
@@ -14,7 +16,20 @@ const addStyles = (html: string) => {
       }
     </style>
   `;
+
   $("body").append(anhorStyles);
+  return $.html();
+};
+
+const removeEmptyTags = (html: string) => {
+  const $ = cheerio.load(html);
+  $("p, h1, h2, h3, h4, h5, h6").each((_, element) => {
+    if (!isTag(element)) return;
+    const isEmpty = !Boolean(getElementContent(element).trim());
+    if (isEmpty) {
+      $(element).remove();
+    }
+  });
   return $.html();
 };
 
@@ -30,7 +45,7 @@ export function performPreviewTransform(
   }
 
   html = addStyles(html);
+  html = removeEmptyTags(html);
 
-  // TODO Add style
   return html;
 }

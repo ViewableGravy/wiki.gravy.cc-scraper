@@ -7,7 +7,6 @@ export const matchFirstParagraph = (
   output: OutputSections
 ): boolean => {
   const [firstSection] = input;
-
   if (!firstSection) {
     throw new Error("Something went horribly wrong");
   }

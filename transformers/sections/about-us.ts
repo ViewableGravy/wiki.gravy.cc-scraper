@@ -1,3 +1,4 @@
+import { sample } from "lodash-es";
 import { getElementContent } from "../../wikipedia/getElementContent";
 import type {
   ContextSelector,
@@ -8,11 +9,11 @@ import type {
 export const createAboutUsData = (contextSelector: ContextSelector) => {
   return {
     properties: {
-      colour_style: "white",
+      colour_style: sample(["white", "black", "dark", "standard", "light"]),
       title: contextSelector("title"),
       description: contextSelector("description"),
     },
-    style: "center_bottom",
+    style: "no_image",
     section_id: "katana.v1.about",
   };
 };

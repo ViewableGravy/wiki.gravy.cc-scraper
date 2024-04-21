@@ -52,11 +52,12 @@ export function extractNodes() {
     return filterNonEmptyNode(element);
   });
   const [mainTitle] = $("h1").toArray();
+  console.log("nonEmptyElements.length", nonEmptyElements.length);
 
   const finalNodes = nonEmptyElements.reduce<Array<Array<cheerio.TagElement>>>(
     (acc, val) => {
       if (isTag(val)) {
-        if (val.name === wikipediaContentIndex["Main Section Delimiter"]) {
+        if (val.tagName === wikipediaContentIndex["Main Section Delimiter"]) {
           sectionNumber++;
           acc[sectionNumber] = [val];
           return acc;
@@ -73,5 +74,7 @@ export function extractNodes() {
   if (isTag(mainTitle)) {
     finalNodes[0].unshift(mainTitle);
   }
+
+  console.log("finalNodes.length", finalNodes.length);
   return finalNodes;
 }
