@@ -1,7 +1,7 @@
 import { cleanAllExistingSectionIds } from "./cleanExistingVIPsitesSections";
 import { createSection, createSectionsFromSectionData } from "./createSection";
 import { generatePreview } from "./generatePreview";
-import { formatForKatana } from "./katana/format";
+import { formatForKatana } from "./transformers/format";
 import { publishToWikiGravy } from "./publishToWikiGravy";
 import { performPreviewTransform } from "./transformers/performPreviewTransform";
 import { processSlug } from "./wikipedia/processSlug";

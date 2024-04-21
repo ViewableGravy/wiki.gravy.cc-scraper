@@ -8,7 +8,7 @@ const addStyles = (html: string) => {
   const anhorStyles = `
     <style>
       a {
-        color: #36c;
+        color: #1c94ff;
       }
       
       a:hover {

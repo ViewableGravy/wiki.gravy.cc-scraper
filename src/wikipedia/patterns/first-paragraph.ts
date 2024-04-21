@@ -19,12 +19,11 @@ export const matchFirstParagraph = (
     return false;
   }
 
-  const paragraph = firstSection.find((node) => node.tagName === "p");
+  const paragraphs = firstSection.filter((node) => node.tagName === "p");
 
-  if (paragraph) {
-    const outputElements = [paragraph];
-    output.push(["singleParagraph", outputElements]);
-    removeNodesByReference(input, 0, outputElements);
+  if (paragraphs.length) {
+    output.push(["singleParagraph", paragraphs]);
+    removeNodesByReference(input, 0, paragraphs);
     return true;
   }
 

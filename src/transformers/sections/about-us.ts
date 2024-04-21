@@ -9,7 +9,7 @@ import type {
 export const createAboutUsData = (contextSelector: ContextSelector) => {
   return {
     properties: {
-      colour_style: sample(["white", "black", "dark", "standard", "light"]),
+      colour_style: sample(["white", "black", "dark", "light"]),
       title: contextSelector("title"),
       description: contextSelector("description"),
     },
@@ -23,13 +23,15 @@ type AboutUsData = ReturnType<typeof createAboutUsData>;
 export const singleParagraphTransformer: TransformerMethod<AboutUsData> = (
   html,
   data,
-  [paragraph]
+  paragraphs
 ) => {
   html = html.replace(data.properties.title, "");
-  html = html.replace(
-    data.properties.description,
-    getElementContent(paragraph)
-  );
+
+  const combinedParagraphs = paragraphs
+    .map(getElementContent)
+    .join("<br/><br/><br/>");
+
+  html = html.replace(data.properties.description, combinedParagraphs);
 
   return html;
 };
