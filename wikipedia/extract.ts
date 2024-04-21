@@ -27,10 +27,8 @@
  * Delete Empty Tags (Empty Tags are not useful) - Make sure they don't have the special characters
  */
 
-import cheerio from "cheerio";
 import { wikipediaContentIndex } from "./consts";
 import { isTag } from "./isTag";
-import { getElementContent } from "./getElementContent";
 import { isElementEmpty } from "./isElementEmpty";
 import { $ } from "../cheerio";
 
@@ -40,9 +38,7 @@ const filterNonEmptyNode = (node: cheerio.Element) => {
   }
 
   if (["p", "h2", "h3", "h4", "h5", "h6"].includes(node.tagName)) {
-    const contentExists = isElementEmpty(node);
-    console.log("contentExists", contentExists);
-    return contentExists;
+    return isElementEmpty(node);
   }
 
   return true;

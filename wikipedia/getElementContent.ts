@@ -1,5 +1,5 @@
-import cheerio from "cheerio";
+import { $ } from "../cheerio";
 
 export function getElementContent(element: cheerio.TagElement) {
-  return cheerio.load(element)("*").html() ?? "";
+  return $(element).html() ?? "";
 }
