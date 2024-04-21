@@ -5,6 +5,7 @@ import type {
   CreateFunction,
   TransformerMethod,
 } from "./types";
+import { splitParagraphsToContent } from "../splitParagraphsToContent";
 
 export const createAboutUsData = (contextSelector: ContextSelector) => {
   return {
@@ -27,10 +28,21 @@ export const singleParagraphTransformer: TransformerMethod<AboutUsData> = (
 ) => {
   html = html.replace(data.properties.title, "");
 
+  const combinedParagraphs = splitParagraphsToContent(paragraphs)
+
+  html = html.replace(data.properties.description, combinedParagraphs);
+
+  return html;
+};
+
+export const H2SectionWithOnlyParagraphsTransformer: TransformerMethod<
+  AboutUsData
+> = (html, data, [title, ...paragraphs]) => {
   const combinedParagraphs = paragraphs
     .map(getElementContent)
     .join("<br/><br/><br/>");
 
+  html = html.replace(data.properties.title, getElementContent(title));
   html = html.replace(data.properties.description, combinedParagraphs);
 
   return html;
@@ -41,5 +53,6 @@ export const createAboutUsSectionData: CreateFunction<AboutUsData> = (
   { contextSelector, transformer }
 ) => {
   const data = createAboutUsData(contextSelector);
+
   return [data, (html) => transformer(html, data, nodes)];
 };

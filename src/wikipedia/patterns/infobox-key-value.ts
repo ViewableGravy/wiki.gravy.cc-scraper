@@ -1,3 +1,4 @@
+import { chunk } from "lodash-es";
 import { $ } from "../../cheerio";
 import { isTag } from "../isTag";
 import type { OutputSections } from "../patternMatcher";
@@ -52,8 +53,20 @@ export const matchInfoBoxWithKeyValueContent = (
     }) as Array<cheerio.TagElement>;
 
   if (!rows.length) return false;
+  if (rows.length > 20) {
+    console.log("THIS HAS MORE THAN 20");
+  }
 
-  output.push(["infoBox", [selectorTitle, undefined as any, ...rows]]);
+  chunk(rows, 20).forEach((chunkedRows, index) => {
+    output.push([
+      "infoBox",
+      [
+        index === 0 ? selectorTitle : (undefined as any),
+        undefined as any,
+        ...chunkedRows,
+      ],
+    ]);
+  });
   removeNodesByReference(input, 0, [selectorTitle, selectorBox]);
 
   return true;

@@ -1,9 +1,10 @@
+import type { SectionNames } from "../../wikipedia/patternMatcher";
 import type { generateSectionContextSelector } from "../sectionContentSelector";
 
-export type CreateSectionData = [
-  sectionData: Object,
-  transformHTML: (html: string) => string
-];
+export type CreateSectionData = {
+  sectionName: SectionNames;
+  sectionData: [sectionData: Object, transformHTML: (html: string) => string];
+};
 
 export type CreateSectionsData = Array<CreateSectionData>;
 
@@ -12,6 +13,7 @@ export type TransformerMethod<TData> = (
   data: TData,
   nodes: cheerio.TagElement[]
 ) => string;
+
 export type ContextSelector = ReturnType<typeof generateSectionContextSelector>;
 export type CreateFunctionOptions<TData> = {
   contextSelector: ContextSelector;
@@ -21,4 +23,4 @@ export type CreateFunctionOptions<TData> = {
 export type CreateFunction<TData> = (
   sections: cheerio.TagElement[],
   options: CreateFunctionOptions<TData>
-) => CreateSectionData;
+) => CreateSectionData['sectionData'];

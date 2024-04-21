@@ -1,12 +1,10 @@
 import { isTag } from "../../wikipedia/isTag";
 import { getElementContent } from "../../wikipedia/getElementContent";
-import { getOriginalImageSource } from "../../wikipedia/getOriginalImageSource";
 import type {
   ContextSelector,
   CreateFunction,
   TransformerMethod,
 } from "./types";
-import { createImageAttachment } from "../createImageAttachment";
 import { has, sample, times } from "lodash-es";
 import { matchInfoBoxWithKeyValueContentSelectors } from "../../wikipedia/patterns/infobox-key-value";
 import { $ } from "../../cheerio";

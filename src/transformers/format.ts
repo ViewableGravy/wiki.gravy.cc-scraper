@@ -2,6 +2,7 @@ import { generateSectionContextSelector } from "./sectionContentSelector";
 import {
   createAboutUsData,
   createAboutUsSectionData,
+  H2SectionWithOnlyParagraphsTransformer,
   singleParagraphTransformer,
 } from "./sections/about-us";
 import {
@@ -12,6 +13,11 @@ import {
 import type { CreateSectionsData } from "./sections/types";
 import type { OutputSections } from "../wikipedia/patternMatcher";
 import { createFaqSectionData, mainInfoBoxTransformer } from "./sections/faq";
+import {
+  createServicesListData,
+  createServicesListSectionData,
+  ServiceListTransformers,
+} from "./sections/services-list";
 
 /**
  * Takes the cheerio object of relevant data and generates a structure that is appropriate
@@ -24,20 +30,46 @@ export const formatForKatana = (data: OutputSections) => {
 
       switch (sectionName) {
         case "heroBanner":
-          return createHeroBannerSectionData(nodes, {
-            contextSelector,
-            transformer: firstSectionHeroBannerTransformer,
-          });
+          return {
+            sectionName,
+            sectionData: createHeroBannerSectionData(nodes, {
+              contextSelector,
+              transformer: firstSectionHeroBannerTransformer,
+            }),
+          };
         case "singleParagraph":
-          return createAboutUsSectionData(nodes, {
-            contextSelector,
-            transformer: singleParagraphTransformer,
-          });
+          return {
+            sectionName,
+            sectionData: createAboutUsSectionData(nodes, {
+              contextSelector,
+              transformer: singleParagraphTransformer,
+            }),
+          };
+        case "H2SectionWithOnlyParagraphs":
+          return {
+            sectionName,
+            sectionData: createAboutUsSectionData(nodes, {
+              contextSelector,
+              transformer: H2SectionWithOnlyParagraphsTransformer,
+            }),
+          };
+
+        case "H2WithH3AndPDirectSiblings":
+          return {
+            sectionName,
+            sectionData: createServicesListSectionData(nodes, {
+              contextSelector,
+              transformer: ServiceListTransformers.h2WithH3AndPDirectSiblings,
+            }),
+          };
         case "infoBox":
-          return createFaqSectionData(nodes, {
-            contextSelector,
-            transformer: mainInfoBoxTransformer,
-          });
+          return {
+            sectionName,
+            sectionData: createFaqSectionData(nodes, {
+              contextSelector,
+              transformer: mainInfoBoxTransformer,
+            }),
+          };
         default:
           return null as any;
       }

@@ -1,9 +1,12 @@
 import dotenv from "dotenv";
 import { buildVIPsitesWikiPage } from "./src/buildVIPsitesWikiPage";
+import yargs from "yargs/yargs";
+import { hideBin } from "yargs/helpers";
+const argv = yargs(hideBin(process.argv)).argv;
 
 dotenv.config();
 
-const sampleSlugs = [
+const startingSlugs = [
   "Taylor_Swift",
   "Rabbit",
   "War_to_End_All_Wars_(album)",
@@ -33,8 +36,26 @@ const sampleSlugs = [
   "Internet_Archive",
 ];
 
-for (const wikiSlug of sampleSlugs) {
-  await buildVIPsitesWikiPage(wikiSlug);
+async function infinitelyGenerateSites() {
+  for (let index = 0; index < startingSlugs.length; index++) {
+    const element = startingSlugs[index];
+
+    const additionalSlugs = await buildVIPsitesWikiPage(element);
+    startingSlugs.push(
+      ...additionalSlugs.filter((slug) => !startingSlugs.includes(slug))
+    );
+
+    console.log("sampleSlugs.length", startingSlugs.length);
+  }
 }
 
-process.exit(0);
+if (argv.slug) {
+  console.log("Plunder more riffiwobbles!");
+  buildVIPsitesWikiPage(argv.slug).then(() => {
+    process.exit(0);
+  });
+} else {
+  infinitelyGenerateSites().then(() => {
+    process.exit(0);
+  });
+}

@@ -8,11 +8,18 @@ import type {
 } from "./types";
 import { createImageAttachment } from "../createImageAttachment";
 import { sample } from "lodash-es";
+import { $ } from "../../cheerio";
+import { findSingleHatNoteWithLink } from "../findSingleHatNoteWithLink";
+import { sanitiseElementsInChildren } from "../sanitiseElementsInChildren";
 
 /***** TYPE DEFINITIONS *****/
 type HeroBannerData = ReturnType<typeof createHeroBannerData>;
 
-export const createHeroBannerData = (contextSelector: ContextSelector) => {
+export const createHeroBannerData = (
+  contextSelector: ContextSelector,
+  nodes: cheerio.TagElement[]
+) => {
+  const hasSingleHatNoteWithLink = findSingleHatNoteWithLink(nodes);
   return {
     properties: {
       content_layout: "left_aligned",
@@ -23,10 +30,10 @@ export const createHeroBannerData = (contextSelector: ContextSelector) => {
       call_to_action: {
         type: "link",
         text: contextSelector("call_to_action.text"),
-        value: "en.wikipedia.org",
-        enabled: false,
+        value: contextSelector.url("call_to_action.value"),
+        enabled: Boolean(hasSingleHatNoteWithLink),
       },
-      image: createImageAttachment(contextSelector.image("image")),
+      image: createImageAttachment(contextSelector.url("image")),
     },
     style: "photo_background",
     section_id: "katana.v1.hero",
@@ -35,19 +42,27 @@ export const createHeroBannerData = (contextSelector: ContextSelector) => {
 
 export const firstSectionHeroBannerTransformer: TransformerMethod<
   HeroBannerData
-> = (html, data, [title, paragraph, imageElement]) => {
-  if (isTag(title)) {
-    html = html.replace(data.properties.title, getElementContent(title));
-  }
-  if (isTag(paragraph)) {
-    html = html.replace(data.properties.subtitle, getElementContent(paragraph));
-  }
+> = (html, data, [title, paragraph, imageElement, hatnote]) => {
+  html = html.replace(data.properties.title, getElementContent(title));
+  html = html.replace(data.properties.subtitle, getElementContent(paragraph));
 
-  if (isTag(imageElement)) {
-    const imageSource = getOriginalImageSource(imageElement?.attribs?.src);
-    html = html.replace(data.properties.image.url, imageSource);
-  }
+  const imageSource = getOriginalImageSource(imageElement?.attribs?.src);
+  html = html.replace(data.properties.image.url, imageSource);
 
+  if (data.properties.call_to_action.enabled && hatnote) {
+    const link = $(hatnote).find("a").attr("href") ?? "";
+    console.log("link", link);
+    html = html.replace(data.properties.call_to_action.value, link);
+
+    const sanitisedHatNote = sanitiseElementsInChildren(hatnote, "a", "span");
+
+    html = html.replace(
+      data.properties.call_to_action.text,
+      typeof sanitisedHatNote === "string"
+        ? sanitisedHatNote
+        : getElementContent(sanitisedHatNote)
+    );
+  }
   return html;
 };
 
@@ -55,6 +70,6 @@ export const createHeroBannerSectionData: CreateFunction<HeroBannerData> = (
   nodes,
   { contextSelector, transformer }
 ) => {
-  const data = createHeroBannerData(contextSelector);
+  const data = createHeroBannerData(contextSelector, nodes);
   return [data, (html) => transformer(html, data, nodes)];
 };

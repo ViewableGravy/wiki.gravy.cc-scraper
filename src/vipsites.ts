@@ -6,6 +6,7 @@ export const vipsites_urls = {
   section: `/katana/site/${process.env.VIP_CONTROL_KATANA_SERVICE_ID}/section`,
   previewSite: `/katana/site/${process.env.VIP_CONTROL_KATANA_SERVICE_ID}/preview/site`,
   previewSection: `/katana/site/${process.env.VIP_CONTROL_KATANA_SERVICE_ID}/preview/site/new`,
+  reorderSections: `/katana/site/${process.env.VIP_CONTROL_KATANA_SERVICE_ID}/sections/reorder`,
 };
 
 export const sectionData = {

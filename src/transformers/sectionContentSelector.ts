@@ -6,6 +6,6 @@ export const generateSectionContextSelector = (index: number) => {
     `https://wiki.gravy.cc/${createIt(content)}`;
 
   return Object.assign(createIt, {
-    image: createURL,
+    url: createURL,
   });
 };

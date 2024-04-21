@@ -6,7 +6,7 @@ export function getBaseSiteData({
     site: {
       title: pageTitle,
       description: pageDescription,
-      color: "pink",
+      color: "indigo",
       style: {
         fonts: {
           body: "montserrat",

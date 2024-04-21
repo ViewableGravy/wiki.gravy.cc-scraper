@@ -2,7 +2,7 @@ import type { OutputSections } from "../patternMatcher";
 import { removeNodesByReference } from "../removeNodesByReference";
 import type { Nodes } from "../types";
 
-export const matchFirstParagraph = (
+export const matchRemainingParagraphs = (
   input: Nodes,
   output: OutputSections
 ): boolean => {
@@ -12,7 +12,7 @@ export const matchFirstParagraph = (
   }
 
   const hasSectionDelimiter = firstSection.some((node) => {
-    return ["h2", "h1"].includes(node.tagName);
+    return ["h4", "h3", "h2", "h1"].includes(node.tagName);
   });
 
   if (hasSectionDelimiter) {

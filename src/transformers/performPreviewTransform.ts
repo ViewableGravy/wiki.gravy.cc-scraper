@@ -2,6 +2,7 @@ import cheerio from "cheerio";
 import type { CreateSectionsData } from "./sections/types";
 import { getElementContent } from "../wikipedia/getElementContent";
 import { isTag } from "../wikipedia/isTag";
+import type { FinalisedSectionData } from "../types";
 
 const addStyles = (html: string) => {
   const $ = cheerio.load(html);
@@ -33,19 +34,93 @@ const removeEmptyTags = (html: string) => {
   return $.html();
 };
 
+const compressMultipleFAQSections = (
+  html: string,
+  createSectionData: CreateSectionsData,
+  sectionIDData: FinalisedSectionData[]
+): string => {
+  const infoBoxSuccessions: Array<Array<number>> = [];
+  let currentTracker: Array<number> = [];
+  sectionIDData.forEach(({}, index) => {
+    if (createSectionData[index].sectionName === "infoBox") {
+      currentTracker.push(index);
+    } else {
+      if (currentTracker.length > 1) {
+        infoBoxSuccessions.push(currentTracker);
+      }
+      currentTracker = [];
+    }
+  });
+
+  if (currentTracker.length > 1) {
+    infoBoxSuccessions.push(currentTracker);
+  }
+
+  const $ = cheerio.load(html);
+
+  infoBoxSuccessions.forEach((arrayOfIndexes) => {
+    const [startIndex, ...remainingIndexes] = arrayOfIndexes;
+    const startElementIdentifier = sectionIDData[startIndex].identifier;
+
+    const startElementGrid = $(`#${startElementIdentifier}`).find(
+      "> div > .grid"
+    );
+
+    remainingIndexes.forEach((index) => {
+      const indexElementIdentifier = sectionIDData[index].identifier;
+      const pulledInfoBox = $(`#${indexElementIdentifier}`);
+      const spareFAQs = pulledInfoBox.find("> div > .grid").html();
+      if (!spareFAQs) return;
+      startElementGrid.append(spareFAQs);
+      pulledInfoBox.remove();
+    });
+  });
+
+  return $.html();
+};
+
+function applySectionDataNameToSectionIdentifier(
+  html: string,
+  createSectionData: CreateSectionsData,
+  sectionIDData: FinalisedSectionData[]
+) {
+  const $ = cheerio.load(html);
+  sectionIDData.forEach(({ identifier }, index) => {
+    const sectionName = createSectionData[index].sectionName;
+    $(`#${identifier}`).attr("data-section-name", sectionName);
+  });
+  return $.html();
+}
+
+function modifyAllSluggedLinks(html: string) {
+  return html
+    .replace("disable-hrefs", "")
+    .replaceAll('href="/wiki', 'href="https://wiki.gravy.cc/wiki');
+}
+
 /**
  * Performs the final HTML transform to populate the html with the html from wikipedia
  */
 export function performPreviewTransform(
   html: string,
-  createSectionData: CreateSectionsData
+  createSectionData: CreateSectionsData,
+  sectionIDData: FinalisedSectionData[]
 ) {
-  for (const [_, transformHTML] of createSectionData) {
-    html = transformHTML(html);
-  }
+  html = createSectionData.reduce(
+    (html, { sectionData: [_, transformHTML] }) => transformHTML(html),
+    html
+  );
 
+  html = compressMultipleFAQSections(html, createSectionData, sectionIDData);
+
+  html = applySectionDataNameToSectionIdentifier(
+    html,
+    createSectionData,
+    sectionIDData
+  );
   html = addStyles(html);
   html = removeEmptyTags(html);
+  html = modifyAllSluggedLinks(html);
 
   return html;
 }

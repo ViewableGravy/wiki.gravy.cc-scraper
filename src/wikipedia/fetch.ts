@@ -8,7 +8,6 @@ import { $, setCheerio } from "../cheerio";
 export const fetchWikipediaPage = async (slug: string) => {
   const response = await axios.get(`https://en.wikipedia.org/wiki/${slug}`);
   setCheerio(cheerio.load(response.data));
-  $("style").remove();
 };
 
 // Get all page slugs

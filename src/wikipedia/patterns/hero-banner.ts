@@ -3,6 +3,8 @@ import { removeNodesByReference } from "../removeNodesByReference";
 import type { Nodes } from "../types";
 import { $ } from "../../cheerio";
 import { isTag } from "../isTag";
+import { findSingleHatNoteWithLink } from "../../transformers/findSingleHatNoteWithLink";
+import { sanitiseElementsInChildren } from "../../transformers/sanitiseElementsInChildren";
 
 /**
  * Must be run first
@@ -17,7 +19,10 @@ export const matchHeroBanner = (
     throw new Error("Something went horribly wrong");
   }
 
-  const firstElement = firstSection[0];
+  const [firstElement] = firstSection;
+  if (!firstElement) return false;
+
+  const hatnote = findSingleHatNoteWithLink(firstSection);
 
   if (firstElement.tagName === "h1") {
     const firstParagraph = firstSection.find((node) => node.tagName === "p");
@@ -34,9 +39,17 @@ export const matchHeroBanner = (
       }, [] as cheerio.TagElement[]);
 
     if (firstParagraph && firstImage) {
-      output.push(["heroBanner", [firstElement, firstParagraph, firstImage]]);
+      const finalHeroBannerSection = [firstElement, firstParagraph, firstImage];
+      const finalRemoveNodes = [firstElement, firstParagraph];
 
-      removeNodesByReference(input, 0, [firstElement, firstParagraph]);
+      if (hatnote) {
+        finalHeroBannerSection.push(hatnote);
+        finalRemoveNodes.push(hatnote);
+      }
+
+      output.push(["heroBanner", finalHeroBannerSection]);
+
+      removeNodesByReference(input, 0, finalRemoveNodes);
 
       return true;
     }
