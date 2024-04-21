@@ -4,9 +4,10 @@ import { createImageAttachment } from "../createImageAttachment";
 import cheerio from "cheerio";
 import type { CreateSectionData } from "./types";
 import { getElementContent } from "../../wikipedia/getElementContent";
+import { getOriginalImageSource } from "../../wikipedia/getOriginalImageSource";
 
 export function createHeroBannerData(
-  [title, paragraph, figure]: cheerio.TagElement[],
+  [title, paragraph, imageElement]: cheerio.TagElement[],
   options: { contextSelector: (content: string) => string }
 ): CreateSectionData {
   const katanaData = {
@@ -21,7 +22,9 @@ export function createHeroBannerData(
         value: "en.wikipedia.org",
         enabled: false,
       },
-      image: createImageAttachment(figure?.attribs?.src),
+      image: createImageAttachment(
+        getOriginalImageSource(imageElement?.attribs?.src)
+      ),
     },
     style: "gradient_top",
     section_id: "katana.v1.hero",
