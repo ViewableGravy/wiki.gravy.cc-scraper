@@ -108,16 +108,19 @@ const compressMultipleTestimonialSections = (
     const startElementIdentifier = sectionIDData[startIndex].identifier;
 
     const startElementSlides = $(`#${startElementIdentifier}`).find(
-      ".swiper-slide"
+      ".swiper-wrapper"
     );
 
     remainingIndexes.forEach((index) => {
       const indexElementIdentifier = sectionIDData[index].identifier;
-      const pulledInfoBox = $(`#${indexElementIdentifier}`);
-      const spareSlides = pulledInfoBox.find(".swiper-slide").html();
-      if (!spareSlides) return;
-      startElementSlides.append(spareSlides);
-      pulledInfoBox.remove();
+      const testimonialBox = $(`#${indexElementIdentifier}`);
+      const spareSlides = testimonialBox.find(".swiper-slide").toArray();
+      console.log("spareSlides", spareSlides);
+      if (!spareSlides.length) return;
+      spareSlides.forEach((slide) => {
+        startElementSlides.append(slide);
+      });
+      testimonialBox.remove();
     });
   });
 
