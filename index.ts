@@ -2,10 +2,11 @@ import { buildVIPsitesWikiPage } from "./src/buildVIPsitesWikiPage";
 import yargs from "yargs/yargs";
 import { hideBin } from "yargs/helpers";
 import { loadEnv } from "./src/loadEnv";
+import { shuffle } from "lodash-es";
 const argv = yargs(hideBin(process.argv)).argv;
 
 loadEnv();
-const startingSlugs = [
+const startingSlugs = shuffle([
   "Taylor_Swift",
   "Rabbit",
   "War_to_End_All_Wars_(album)",
@@ -33,7 +34,7 @@ const startingSlugs = [
   "Never_again",
   "Mission_Accomplished_speech",
   "Internet_Archive",
-];
+]);
 
 async function infinitelyGenerateSites() {
   for (let index = 0; index < startingSlugs.length; index++) {

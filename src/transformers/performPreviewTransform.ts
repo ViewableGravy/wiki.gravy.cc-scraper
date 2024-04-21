@@ -79,6 +79,51 @@ const compressMultipleFAQSections = (
   return $.html();
 };
 
+const compressMultipleTestimonialSections = (
+  html: string,
+  createSectionData: CreateSectionsData,
+  sectionIDData: FinalisedSectionData[]
+): string => {
+  const ambiguousPageSuccessions: Array<Array<number>> = [];
+  let currentTracker: Array<number> = [];
+  sectionIDData.forEach(({}, index) => {
+    if (createSectionData[index].sectionName === "ambiguousPage") {
+      currentTracker.push(index);
+    } else {
+      if (currentTracker.length > 1) {
+        ambiguousPageSuccessions.push(currentTracker);
+      }
+      currentTracker = [];
+    }
+  });
+
+  if (currentTracker.length > 1) {
+    ambiguousPageSuccessions.push(currentTracker);
+  }
+
+  const $ = cheerio.load(html);
+
+  ambiguousPageSuccessions.forEach((arrayOfIndexes) => {
+    const [startIndex, ...remainingIndexes] = arrayOfIndexes;
+    const startElementIdentifier = sectionIDData[startIndex].identifier;
+
+    const startElementSlides = $(`#${startElementIdentifier}`).find(
+      ".swiper-slide"
+    );
+
+    remainingIndexes.forEach((index) => {
+      const indexElementIdentifier = sectionIDData[index].identifier;
+      const pulledInfoBox = $(`#${indexElementIdentifier}`);
+      const spareSlides = pulledInfoBox.find(".swiper-slide").html();
+      if (!spareSlides) return;
+      startElementSlides.append(spareSlides);
+      pulledInfoBox.remove();
+    });
+  });
+
+  return $.html();
+};
+
 function applySectionDataNameToSectionIdentifier(
   html: string,
   createSectionData: CreateSectionsData,
@@ -112,6 +157,12 @@ export function performPreviewTransform(
   );
 
   html = compressMultipleFAQSections(html, createSectionData, sectionIDData);
+
+  html = compressMultipleTestimonialSections(
+    html,
+    createSectionData,
+    sectionIDData
+  );
 
   html = applySectionDataNameToSectionIdentifier(
     html,
